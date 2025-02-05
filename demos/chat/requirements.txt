@@ -1,0 +1,5 @@
+llm==0.19.1
+llm-gemini==0.7
+llm-gpt4all==0.4
+llm-mlc==0.5
+llm-ollama==0.8.0

@@ -1,177 +1,205 @@
 ---
 marp: true
-title: Python Web Development Journey
-theme: gaia
+theme: default
 paginate: true
+class: lead
+backgroundColor: #fff
 ---
 
-# Python Web Development Journey
-## From Static Sites to Dynamic Applications
+# Getting Started with Local LLMs Using llm
+## A Practical Guide to Running Language Models on Your Machine
 
-- A 3-act workshop exploring web development with Python
-- ![](./workshop_qr.png)
-
----
-
-# Act 1: Getting Started with Web Basics 🌐
-
-<!-- eta: 15min -->
-
-## Understanding Static Web Hosting
-
-- Basic HTML/CSS structure
-- Python's `http.server` for local development
-- Deploying static sites
+![](../tools/qrcode.svg)
 
 ---
 
-# Your First Python Web Server 🚀
+# Act 1: Getting Started 🚀
+
+## Installation and Setup
+
+```bash
+pip install llm
+pip install llm[gpt4all]
+pip install llm[llama]
+```
+
+---
+
+## Other stuff
+
+- ollama
+- ppx and other keys
+- Apple silicon vs cpu vs GPU
+
+---
+
+# Basic Usage
+
+Command line:
+```bash
+llm "What is the name of the body of water West of Florida?"
+```
+
+Python:
+```python
+import llm
+
+question = "Who once said 'Death to Tyrants?'"
+response = llm.complete(question)
+print(response)
+```
+
+---
+
+# Act 2: Working with Models ⚡
+
+## Installing Models
+
+```bash
+llm models install gpt4all-j
+llm models install deepseek-r1
+llm models install llama-2-7b-chat
+```
+
+---
+
+# Selecting Models
 
 ```python
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+import llm
 
-def run_server(port=8000):
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
-    print(f"Serving at port {port}")
-    httpd.serve_forever()
+# Use a specific model
+model = llm.get_model("gpt4all-j")
+response = model.complete("Explain quantum computing")
 
-if __name__ == '__main__':
-    run_server()
+# Set a default model
+llm.set_default_model("gpt4all-j")
 ```
 
 ---
 
-# Act 2: Enter FastAPI ⚡
+# Act 3: Advanced Features 🎭
 
-<!-- eta: 20min -->
-
-## Moving to Modern Web Frameworks
-
-- Introduction to FastAPI
-- RESTful API concepts
-- Request/Response cycle
-- Path operations and routing
-
----
-
-# Basic FastAPI Application
+## System Prompts and Templates
 
 ```python
-from fastapi import FastAPI
-from pydantic import BaseModel
+import llm
 
-app = FastAPI()
+template = """You are a helpful assistant.
+Question: {question}
+Answer: Let me help you with that."""
 
-class User(BaseModel):
-    username: str
-    email: str
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-@app.post("/users/")
-def create_user(user: User):
-    return user
+response = llm.complete(
+    template.format(question="What is machine learning?"),
+    system="You are an expert in AI and ML"
+)
 ```
 
 ---
 
-# Understanding Templates 📝
+# Killer Feature: Conversation History
 
-<!-- eta: 15min -->
+```zsh
+llm logs list -m deepseek-r1
+```
 
-## Why Templates Matter
+Entire db is available at
 
-- Separation of concerns
-- Dynamic content generation
-- Template syntax basics
-- Introduction to Jinja2
-
----
-
-# Act 3: Building Dynamic Applications 🎭
-
-<!-- eta: 25min -->
-
-## The Power of Jinja2 with FastAPI
-
-- Template inheritance
-- Dynamic data rendering
-- HTMX integration
-- Real-world patterns
+```zsh
+llm logs path
+```
 
 ---
 
-# Demo: Jinja2 Templates in Action
+# Working with Chat Formats
 
 ```python
-from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
-from fasthx import Jinja
+import llm
 
-app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-jinja = Jinja(templates)
-
-@app.get("/")
-@jinja.page("index.html")
-def index():
-    return {"message": "Welcome!"}
+chat = llm.ChatCompletion()
+messages = [
+    {"role": "system", "content": "You are a helpful assistant"},
+    {"role": "user", "content": "Hello!"},
+]
+response = chat.create(messages=messages)
 ```
 
 ---
 
-# Building Our User List App 📋
+# Best Practices & Tips 🎯
+
+1. **Model Selection**
+   - Consider hardware capabilities
+   - Balance model size and performance
+   - Test different models for specific use cases
+
+2. **Resource Management**
+   - Monitor memory usage
+   - Use appropriate batch sizes
+   - Consider quantized models
+
+---
+
+# Error Handling
 
 ```python
-@app.get("/user-list")
-@jinja.hx("user-list.html")
-def htmx_or_data(response: Response) -> tuple[User, ...]:
-    return (
-        User(first_name="Alice", last_name="Johnson"),
-        User(first_name="Bob", last_name="Smith"),
-    )
+import llm
+
+try:
+    response = llm.complete("Your prompt here")
+except llm.ModelError as e:
+    print(f"Model error: {e}")
+except llm.ResourceError as e:
+    print(f"Resource error: {e}")
 ```
 
 ---
 
-# Template Structure
+# More Useful Commands
 
-```html
-{% extends 'base.html' %}
-{% block content %}
-    {% for user in items %}
-        {{ user.first_name }} {{ user.last_name }}
-    {% endfor %}
-{% endblock %}
+```bash
+# List available models
+llm models list
+
+# Get model information
+llm models info gpt4all-j
+
+# Set default model
+llm models default gpt4all-j
+
+# Save and use templates
+llm templates save my-template "You are a {role}. {question}"
+llm --template my-template --param role="teacher" --param question="What is 2+2?"
 ```
-
----
-
-# Best Practices & Next Steps 🎯
-
-- Structure matters: Keep templates organized
-- Use template inheritance effectively
-- Implement proper error handling
-- Consider caching strategies
-- Explore HTMX for enhanced interactivity
 
 ---
 
 # Resources 📚
 
-## Learning Materials
-
-- FastAPI Documentation: [fastapi.tiangolo.com](https://fastapi.tiangolo.com)
-- Jinja2 Documentation: [jinja.palletsprojects.com](https://jinja.palletsprojects.com)
-- HTMX: [htmx.org](https://htmx.org)
+- Official llm Documentation: [github.com/simonw/llm](https://github.com/simonw/llm)
+- Simon Willison's Blog: [simonwillison.net](https://simonwillison.net)
+- GPT4All Models: [gpt4all.io](https://gpt4all.io)
+- LlamaCpp: [github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)
 
 ---
 
-# Workshop Repository
+# Troubleshooting
 
-- [Your Repository Link]
-- Contains all examples and additional resources
-- ![](./repo_qr.png)
+1. **Model Loading Failures**
+   - Check model path configuration
+   - Verify model compatibility
+   - Ensure sufficient system resources
+
+2. **Memory Issues**
+   - Use smaller models
+   - Enable model offloading
+   - Clear conversation history periodically
+
+---
+
+# Troubleshooting cont'd
+
+3. **Performance Optimization**
+   - Use quantized models
+   - Adjust context window size
+   - Implement caching strategies

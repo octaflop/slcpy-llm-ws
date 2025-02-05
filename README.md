@@ -1,3 +1,7 @@
+# LLM Workshop
+
+SLCPython Feb 2025 meetup.
+
 # Get started:
 
 After cloning, and with python 3.12 installed, run this
@@ -13,15 +17,6 @@ You should be presented with a jupyter lab.
 
 Open `slides/presentation.md` by right-clicking and selecting `Open with > Marp Preview`.
 
-## Demos
-
-- `examples/jinja_demo/` is an advanced demo. To run, install requirements, then:
-
-```bash
-uvicorn demos.jinja_demo.main:app --reload
-```
-
-and you should be able to access http://127.0.0.1:8000
 
 ## Tools
 

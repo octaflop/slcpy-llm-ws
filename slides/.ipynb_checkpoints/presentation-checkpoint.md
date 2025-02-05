@@ -1,190 +1,190 @@
 ---
 marp: true
-title: Cybersecurity with Python Tools
-theme: gaia
+theme: default
 paginate: true
+class: lead
+backgroundColor: #fff
 ---
 
-# Cybersecurity with Python Tools
-
-- [octaflop/cyberpython](https://github.com/octaflop/cyberpython)
-- ![](./cyberpython_github_repo_qr.png) 
-
----
-
-
-# Introduction 🔰
-
-<!-- eta: 3min -->
-
-- Importance of cybersecurity
-- Why Python is popular for cybersecurity
-<!-- joke: "Why did the hacker cross the road? Because that's where the security was weakest!" -->
+# Getting Started with Local LLMs Using llm
+## A Practical Guide to Running Language Models on Your Machine
 
 ---
 
-# Python Basics for Cybersecurity 🐍
+# Act 1: Getting Started 🚀
 
+## Installation and Setup
 
-<!-- eta: 5min -->
-
-- Key Python libraries: `requests`, `socket`, `scrapy`, `cryptography`
-- Setting up a Python environment
-- `python3.12 -m venv venv && source venv/bin/activate`
-- 
-<!-- tip: "Think of virtual environments as your personal cybersecurity lab coats." -->
-
----
-
-# Network Security Tools 🛜
-
-<!-- eta: 8min -->
-
-## Port Scanning with Python
-
-```python
-import socket
-
-def scan_ports(host):
-    for port in range(1, 1025):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex((host, port))
-        if result == 0:
-            print(f"Port {port}: Open")
-        sock.close()
-
-scan_ports('127.0.0.1')
-```
-
-<!-- Joke: "Port scanning is like knocking on doors to see if anyone's home... but less creepy." -->
-
----
-
-## Implementing a Simple Packet Sniffer
-
-- Use scapy to capture and analyze network packets.
-- Reference: [GitHub repository](https://github.com/hposton/python-for-cybersecurity/blob/840769d04d2228803fd7493cdaf52c348b5db775/Part_8/8.2_Network_Sniffing/NetworkCredentialSniffing.py#L4) for Python cybersecurity scripts
-
----
-
-
-# Web Application Security 🌐
-
-<!-- eta: 8min -->
-
-* Web scraping with beautifulsoup, scrapy, scrapyd; etc
-* SQL injection detection: sqlmap
-* XSS vuln scanner
-
----
-
-
-# Cryptography in Python 🔐
-
-<!-- eta: 8min -->
-
-## Encryption and Decryption using PyCrypto
-
-```python
-from Crypto.Cipher import AES
-import base64
-
-def encrypt_message(key, message):
-    cipher = AES.new(key, AES.MODE_EAX)
-    nonce = cipher.nonce
-    ciphertext, tag = cipher.encrypt_and_digest(message.encode('utf-8'))
-    return base64.b64encode(nonce + ciphertext).decode('utf-8')
-
-key = b'Sixteen byte key'
-message = "Secret Message"
-print(encrypt_message(key, message))
-
+```bash
+pip install llm
+pip install llm[gpt4all]
+pip install llm[llama]
 ```
 
 ---
 
-# Demo 🎡
+# Basic Usage
 
-<!-- eta: 14min -->
+Command line:
+```bash
+llm "What is the capital of France?"
+```
 
-## Encrypting and decrypting with python
-
+Python:
 ```python
-import hashlib
-import socket
-from cryptography.fernet import Fernet
+import llm
 
-def hash_password(password):
-    # Hash a password using SHA-256
-    hashed = hashlib.sha256(password.encode()).hexdigest()
-    print(f"Hashed Password: {hashed}")
-
-def check_open_ports(host, ports):
-    # Check if specified ports are open on the given host
-    open_ports = []
-    for port in ports:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1)
-            result = s.connect_ex((host, port))
-            if result == 0:
-                open_ports.append(port)
-    print(f"Open Ports on {host}: {open_ports}")
-
-def encrypt_decrypt_message(message):
-    # Generate a key for encryption
-    key = Fernet.generate_key()
-    cipher_suite = Fernet(key)
-    
-    # Encrypt the message
-    encrypted_message = cipher_suite.encrypt(message.encode())
-    print(f"Encrypted Message: {encrypted_message}")
-    
-    # Decrypt the message
-    decrypted_message = cipher_suite.decrypt(encrypted_message).decode()
-    print(f"Decrypted Message: {decrypted_message}")
-
-def main():
-    # Demonstrate password hashing
-    password = "securepassword123"
-    hash_password(password)
-    
-    # Demonstrate checking open ports
-    host = "localhost"
-    ports = [22, 80, 443, 8080]
-    check_open_ports(host, ports)
-    
-    # Demonstrate encryption and decryption
-    message = "Hello, Cybersecurity!"
-    encrypt_decrypt_message(message)
-
-if __name__ == "__main__":
-    main()
+response = llm.complete("What is the capital of France?")
+print(response)
 ```
 
 ---
 
-# Resources
+# Act 2: Working with Models ⚡
 
-## Long-Form Resources for Further Learning
+## Installing Models
 
-- [Black Hat Python](https://nostarch.com/black-hat-python2E) 💰
-- [Violent Python](https://github.com/tanc7/hacking-books/blob/master/Violent%20Python%20-%20A%20Cookbook%20for%20Hackers,%20Forensic%20Analysts,%20Penetration%20Testers%20and%20Security%20Engineers.pdf) 📖
-
-
----
-
-## GitHub repositories for further exploration
-
-- [PeterMosmans/security-scripts](https://github.com/PeterMosmans/security-scripts)
-
-
-<!-- Joke: "Remember, in cybersecurity, the only thing more important than Python is coffee!" -->
+```bash
+llm models install gpt4all-j
+llm models install llama-2-7b-chat
+```
 
 ---
 
-## This Repo:
+# Selecting Models
 
+```python
+import llm
 
-- [octaflop/cyberpython](https://github.com/octaflop/cyberpython)
-- ![](./cyberpython_github_repo_qr.png)
+# Use a specific model
+model = llm.get_model("gpt4all-j")
+response = model.complete("Explain quantum computing")
+
+# Set a default model
+llm.set_default_model("gpt4all-j")
+```
+
+---
+
+# Act 3: Advanced Features 🎭
+
+## System Prompts and Templates
+
+```python
+import llm
+
+template = """You are a helpful assistant.
+Question: {question}
+Answer: Let me help you with that."""
+
+response = llm.complete(
+    template.format(question="What is machine learning?"),
+    system="You are an expert in AI and ML"
+)
+```
+
+---
+
+# Conversation History
+
+```python
+import llm
+
+conversation = llm.Conversation()
+conversation.append_message("user", "Hi, who are you?")
+conversation.append_message("assistant", "I'm a helpful AI assistant.")
+conversation.append_message("user", "What did I just ask you?")
+
+response = llm.complete_conversation(conversation)
+```
+
+---
+
+# Working with Chat Formats
+
+```python
+import llm
+
+chat = llm.ChatCompletion()
+messages = [
+    {"role": "system", "content": "You are a helpful assistant"},
+    {"role": "user", "content": "Hello!"},
+]
+response = chat.create(messages=messages)
+```
+
+---
+
+# Best Practices & Tips 🎯
+
+1. **Model Selection**
+   - Consider hardware capabilities
+   - Balance model size and performance
+   - Test different models for specific use cases
+
+2. **Resource Management**
+   - Monitor memory usage
+   - Use appropriate batch sizes
+   - Consider quantized models
+
+---
+
+# Error Handling
+
+```python
+import llm
+
+try:
+    response = llm.complete("Your prompt here")
+except llm.ModelError as e:
+    print(f"Model error: {e}")
+except llm.ResourceError as e:
+    print(f"Resource error: {e}")
+```
+
+---
+
+# Useful Commands
+
+```bash
+# List available models
+llm models list
+
+# Get model information
+llm models info gpt4all-j
+
+# Set default model
+llm models default gpt4all-j
+
+# Save and use templates
+llm templates save my-template "You are a {role}. {question}"
+llm --template my-template --param role="teacher" --param question="What is 2+2?"
+```
+
+---
+
+# Resources 📚
+
+- Official llm Documentation: [github.com/simonw/llm](https://github.com/simonw/llm)
+- Simon Willison's Blog: [simonwillison.net](https://simonwillison.net)
+- GPT4All Models: [gpt4all.io](https://gpt4all.io)
+- LlamaCpp: [github.com/ggerganov/llama.cpp](https://github.com/ggerganov/llama.cpp)
+
+---
+
+# Troubleshooting
+
+1. **Model Loading Failures**
+   - Check model path configuration
+   - Verify model compatibility
+   - Ensure sufficient system resources
+
+2. **Memory Issues**
+   - Use smaller models
+   - Enable model offloading
+   - Clear conversation history periodically
+
+3. **Performance Optimization**
+   - Use quantized models
+   - Adjust context window size
+   - Implement caching strategies

@@ -1,10 +1,5 @@
 # demo modules
-fastapi==0.115.6
-fasthx[jinja]==2.1.0
-pydantic~=2.10.3
-qrcode~=8.0
-sqlmodel~=0.0.22
-uvicorn==0.32.1
+-r demos/chat/requirements.txt
 
 # for presentations
 jupyter==1.0.0

@@ -1,15 +1,56 @@
 import http.server
 import os
+import re
 import socketserver
-from jinja2 import Environment, FileSystemLoader
 from typing import Dict
+
+from jinja2 import Environment, FileSystemLoader
+
+
+def process_think_blocks(html_content: str) -> str:
+    """Process <think> blocks in HTML content and format them with proper styling"""
+
+    # Find all think blocks using regex
+    pattern = r'<think>(.*?)</think>'
+
+    def format_think_block(match):
+        content = match.group(1)
+        # Split into sentences and clean up
+        sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', content) if s.strip()]
+
+        # Create formatted HTML
+        formatted = ['<div class="think-box bg-gray-50 border-l-4 border-blue-400 p-6 my-6 rounded-r-lg shadow-md">',
+                     '<p class="mb-4 text-sm text-gray-500 font-semibold">Thinking Process:</p>',
+                     '<div class="space-y-4 text-gray-700">']
+
+        for sentence in sentences:
+            formatted.append(
+                f'<p class="think-line hover:bg-blue-50 p-2 rounded transition-colors duration-200">{sentence}</p>')
+
+        formatted.append('</div></div>')
+        return '\n'.join(formatted)
+
+    # Replace all think blocks
+    processed_html = re.sub(pattern, format_think_block, html_content, flags=re.DOTALL)
+    return processed_html
 
 
 def render_template(template_path: str, output_context: dict) -> str:
     template_dir, template_name = os.path.split(template_path)
     env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template(template_name)
-    return template.render(output_context)
+
+    # Read the template first
+    with open(template_path, 'r') as f:
+        content = f.read()
+
+    # Create template and render first
+    template = env.from_string(content)
+    rendered_content = template.render(output_context)
+
+    # Process think blocks after template rendering
+    processed_content = process_think_blocks(rendered_content)
+
+    return processed_content
 
 
 class TemplateHandler(http.server.SimpleHTTPRequestHandler):
